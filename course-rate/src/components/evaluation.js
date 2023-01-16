@@ -2,6 +2,9 @@ import React, { useEffect, useState } from "react";
 import axios from "axios";
 import StarRating from "./starRating";
 import useForm from '../hooks/useForm';
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+
 
 function Evalutaion() {
     const [students, setStudents] = useState(null);
@@ -37,7 +40,6 @@ function Evalutaion() {
             const result = await axios.get(
                 "https://localhost:7225/Course/GetCoursesByStudent", { params: { studentId: eventTarget.value } },
             );
-            console.log(result.data);
             setCourses(result.data);
         } catch (err) {
             setError(err.message || "Unexpected Error!");
@@ -49,17 +51,16 @@ function Evalutaion() {
     const insertEvaluation = async () => {
 
         try {
-            const result = await axios.post(
+            await axios.post(
                 "https://localhost:7225/Evaluation/InsertEvaluation", { 'studentId': values.Student, 'courseId': values.Course, 'stars': rating, 'description': values.Description },
             );
-            console.log(result.data);
         } catch (err) {
             setError(err.message || "Unexpected Error!");
         } finally {
             setLoading(false);
+            document.getElementById("evaluation-form").reset();
+            toast.success("Evaluation added!")
         }
-
-        console.log(values);
     };
 
     return (
@@ -68,7 +69,7 @@ function Evalutaion() {
                 <div className="col-6">
                     <h1>Evaluate Courses</h1>
 
-                    <form onSubmit={handleSubmit(insertEvaluation)}>
+                    <form id="evaluation-form" onSubmit={handleSubmit(insertEvaluation)}>
 
                         <div className="row pb-3 form-floating">
                             <select id="student-select" name="Student" className="form-select" aria-label="Default select example" placeholder="Student" onChange={(e) => { GetCoursesByStudent(e.target); handleChange(e) }}>
@@ -93,7 +94,7 @@ function Evalutaion() {
                         }
 
                         <div className="row pb-3 form-floating">
-                            <textarea class="form-control" name="Description" id="description-text-area" placeholder="Description" style={{height: '150px'}} onChange={(e) => handleChange(e)}></textarea>
+                            <textarea class="form-control" name="Description" id="description-text-area" placeholder="Description" style={{ height: '150px' }} onChange={(e) => handleChange(e)}></textarea>
                             <label for="description-text-area">Description</label>
                         </div>
                         <div className="row pb-3">
@@ -109,7 +110,18 @@ function Evalutaion() {
             </div>
 
 
-
+            <ToastContainer
+                position="top-right"
+                autoClose={5000}
+                hideProgressBar={false}
+                newestOnTop={false}
+                closeOnClick
+                rtl={false}
+                pauseOnFocusLoss
+                draggable
+                pauseOnHover
+                theme="colored"
+            />
         </div>
     );
 };
