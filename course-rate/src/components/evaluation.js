@@ -20,7 +20,7 @@ function Evalutaion() {
         setLoading(true);
         try {
             const result = await axios.get(
-                "https://localhost:7225/WeatherForecast/GetStudents"
+                "https://localhost:7225/Student/GetStudents"
             );
             setStudents(result.data);
         } catch (err) {
@@ -35,7 +35,7 @@ function Evalutaion() {
         setLoading(true);
         try {
             const result = await axios.get(
-                "https://localhost:7225/WeatherForecast/GetCoursesByStudent", { params: { studentId: eventTarget.value } },
+                "https://localhost:7225/Course/GetCoursesByStudent", { params: { studentId: eventTarget.value } },
             );
             console.log(result.data);
             setCourses(result.data);
@@ -47,13 +47,12 @@ function Evalutaion() {
     };
 
     const insertEvaluation = async () => {
-        
+
         try {
             const result = await axios.post(
-                "https://localhost:7225/WeatherForecast/InsertEvaluation", { 'studentId': values.Student, 'courseId': values.Course, 'stars': rating, 'description': 'teste' },
+                "https://localhost:7225/Evaluation/InsertEvaluation", { 'studentId': values.Student, 'courseId': values.Course, 'stars': rating, 'description': values.Description },
             );
             console.log(result.data);
-            setCourses(result.data);
         } catch (err) {
             setError(err.message || "Unexpected Error!");
         } finally {
@@ -64,31 +63,54 @@ function Evalutaion() {
     };
 
     return (
-        <>
-            <h1>Evaluations</h1>
+        <div className="container">
+            <div className="row justify-content-center">
+                <div className="col-6">
+                    <h1>Evaluate Courses</h1>
 
-            <form onSubmit={handleSubmit(insertEvaluation)}>
-                <select name="Student" className="form-select" aria-label="Default select example" onChange={(e) => {GetCoursesByStudent(e.target); handleChange(e)}}>
-                    <option selected>Open this select menu</option>
-                    {students?.map((student) => (
-                        <option value={student.id}>{student.name} - {student.lastName}</option>
-                    ))}
-                </select>
-                {courses &&
-                    <select name="Course" className="form-select" aria-label="Default select example" onChange={(e) => handleChange(e)}>
-                        <option selected>Open this select menu</option>
-                        {courses?.map((course) => (
-                            <option value={course.id}>{course.name}</option>
-                        ))}
-                    </select>
-                }
+                    <form onSubmit={handleSubmit(insertEvaluation)}>
 
-                <StarRating rating={rating} setRating={setRating} hover={hover} setHover={setHover} />
-                <button type="submit">{loading ? 'Enviando...' : 'Enviar'}</button>
-            </form>
+                        <div className="row pb-3 form-floating">
+                            <select id="student-select" name="Student" className="form-select" aria-label="Default select example" placeholder="Student" onChange={(e) => { GetCoursesByStudent(e.target); handleChange(e) }}>
+                                <option selected>Select...</option>
+                                {students?.map((student) => (
+                                    <option value={student.id}>{student.name} - {student.lastName}</option>
+                                ))}
+                            </select>
+                            <label for="student-select">Student</label>
+                        </div>
+                        {courses &&
+                            <div className="row pb-3 form-floating">
+                                <select name="Course" className="form-select" aria-label="Default select example" id="course-select" placeholder="Course" onChange={(e) => handleChange(e)}>
+                                    <option selected>Select...</option>
+                                    {courses?.map((course) => (
+                                        <option value={course.id}>{course.name}</option>
+                                    ))}
+                                </select>
+                                <label for="course-select">Course</label>
+
+                            </div>
+                        }
+
+                        <div className="row pb-3 form-floating">
+                            <textarea class="form-control" name="Description" id="description-text-area" placeholder="Description" style={{height: '150px'}} onChange={(e) => handleChange(e)}></textarea>
+                            <label for="description-text-area">Description</label>
+                        </div>
+                        <div className="row pb-3">
+                            <StarRating rating={rating} setRating={setRating} hover={hover} setHover={setHover} />
+                        </div>
+                        <div className="row pb-3">
+
+                            <button className="btn btn-primary" type="submit">{loading ? 'Enviando...' : 'Enviar'}</button>
+                        </div>
+
+                    </form>
+                </div>
+            </div>
 
 
-        </>
+
+        </div>
     );
 };
 

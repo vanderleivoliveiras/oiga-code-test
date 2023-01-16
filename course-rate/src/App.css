@@ -28,7 +28,8 @@
   color: #61dafb;
 }
 
-button {
+
+.star-rating button {
   background-color: transparent;
   border: none;
   outline: none;

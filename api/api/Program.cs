@@ -5,17 +5,8 @@ var builder = WebApplication.CreateBuilder(args);
 
 
 builder.Services.AddDbContext<OigaDbContext>(options =>
-    options.UseSqlServer(builder.Configuration.GetConnectionString("MvcMovieContext")));
+    options.UseSqlServer(builder.Configuration.GetConnectionString("oigaDB")));
 
-//builder.Services.AddCors(options =>
-//{
-//    options.AddPolicy(name: "alowOrigins",
-//                      policy =>
-//                      {
-//                          policy.AllowAnyOrigin();
-//                          policy.AllowAnyMethod();
-//                      });
-//});
 
 builder.Services.AddCors();
 // Add services to the container.
